@@ -1,0 +1,356 @@
+    1  sudo apt install code
+    2  sudo apt install code--
+    3  sudo apt update && sudo apt upgrade -y
+    4  run apt-get update
+    5  apt-get update
+    6  sudo apt-get update
+    7  sudo apt install code--
+    8  sudo apt install code-
+    9  sudo apt install snap
+   10  sudo snap install code--
+   11  sudo snap install code
+   12  sudo snap install code--classic
+   13  sudo snap install code --classic
+   14  code
+   15  sudo apt install apache2
+   16  sudo systemctl status apache2
+   17  sudo apt install mysql-client
+   18  sudo apt install mysql-server
+   19  sudo mysql_secure_installation
+   20  sudo mysql
+   21  sudo systemctl status mysql
+   22  sudo apt install php libapache2-mod-php php-mysql php-cli php-curl php-xml php-mbstring php-zip php-gd
+   23  sudo systemctl restart apache2
+   24  sudo systemctl status apache2
+   25  echo "<?php phpinfo(); ?>" | sudo tee /var/www/html/info.php
+   26  sudo rm /var/www/html/info.php
+   27  exit
+   28  php artisan migrate
+   29  sudo systemctl mysql
+   30  sudo systemctl status mysql
+   31  sudo systemctl status apache2
+   32  sudo mysql  -u root -p
+   33  php artisan migrate
+   34  cd..
+   35  cd ..
+   36  sudo cp -R myProject /home/osboxes/
+   37  cd --
+   38  ls 
+   39  cd myProject/
+   40  ls -l
+   41  cd ..
+   42  ls -l
+   43  sudo chown -R osboxes:osboxes myProject/.*
+   44  ls -l
+   45  ls -al myProject/
+   46  cd myProject/
+   47  mysql -u laravel_user -p
+   48  sudo mysql -u root -p
+   49  mysql -u laravel-user -p
+   50  ip addr
+   51  php artisan serve --host=192.168.1.32
+   52  php artisan optimize:clear
+   53  php artisan serve --host=192.168.1.32
+   54  composer update
+   55  php artisan serve --host=192.168.1.32
+   56  php artisan migrate:refresh
+   57  composer update
+   58  php artisan serve --host=192.168.1.32
+   59  php artisan make:test UserRegistrationTest
+   60  php artisan make:controller Auth/RegisterController
+   61  php artisan test
+   62  php artisan test -v
+   63  man php artisan test
+   64  man ls
+   65  ma
+   66  unminimize ls
+   67  php artisan list --verbose
+   68  man php artisan testcd ..
+   69  cd ..
+   70  ls
+   71  cd myProject/
+   72  php artisan make:test BookTest
+   73  php artisan serve
+   74  php artisan serve --host=192.168.56.111
+   75  php artisan test
+   76  php artisan make:factory BookFactory --model=Book
+   77  php artisan test
+   78  php artisan make:seeder BookSeeder
+   79  php artisan test
+   80  php artisan serve
+   81  php artisan serve --host=192.168.56.111
+   82  php artisan test
+   83  php artisan test BooTest
+   84  php artisan test BookTest
+   85  php artisan test
+   86  clear
+   87  php artisan test
+   88  php artisan test --filter=BookTest
+   89  mysql -u laravel-user -p
+   90  php artisan test --filter=BookTest
+   91  php artisan serve --host=192.168.56.111
+   92  php artisan test --filter=BookTest
+   93  sudo apt install behat
+   94  composer require --dev behat/behat
+   95  vendor/bin/behat --init
+   96  ls ./
+   97  ls
+   98  ls ../
+   99  ls ./~
+  100  ls ./~//
+  101  ls ./~/
+  102  ls ./../
+  103  ls ~/../
+  104  ls ~/~/
+  105  ~/./../
+  106  ./../../
+  107  ./../../osboxes
+  108  ~/./../osboxes
+  109  history | tail
+  110  history | tail -n 20
+  111  history | tail -n 50
+  112  mdkir features
+  113  sudo apt install mkdir
+  114  which mkdir
+  115  mkdir features
+  116  mkdir login.features
+  117  nano login.feature
+  118  mv login.feature features/
+  119  vendor/bin/behat
+  120  php artisan serve --host=192.168.56.111 && vendor/bin/behat 
+  121  php artisan serve --host=192.168.56.111&
+  122  vendor/bin/behat 
+  123  vendor/bin/behat --init
+  124  sudo mysql -u root -p
+  125  mysql -u recettes-user -p
+  126  mysql -u recette-user -p
+  127  php artisan make:model Recette -m
+  128  php artisan make:model Categorie -m
+  129  php artisan make:model Ingredient -m
+  130  code
+  131  git -v
+  132  git init
+  133  git add .
+  134  git branch
+  135  git commit -m "first commit"
+  136  code
+  137  history
+  138  git remote add origin https://github.com/LThuillier/Site-Livres-recettes.git
+  139  git branch -M main
+  140  git push -u origin main
+  141  git remote -v
+  142  curl -I https://github.com
+  143  sudo apt update
+  144  curl -I https://google.com
+  145  curl -I https://github.com
+  146  sudo apt install ca-certificates -y
+  147  sudo update-ca-certificates
+  148  curl -I https://github.com
+  149  date
+  150  sudo timedatectl set-ntp true
+  151  sudo systemctl restart systemd-timesyncd
+  152  date
+  153  timedatectl status
+  154  curl -I https://github.com
+  155  ssh-keygen -t ed25519 -C "lisethuillier@orange.fr"
+  156  cat ~/.ssh/id_ed25519.pub
+  157  ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHq+5m3mVU9q9VOmCEFvY78h8NzSyMPN0k60LhYOHaHg lisethuillier@orange.fr
+  158  ssh -T git@github.com
+  159  ssh -T Lthuillier@github.com
+  160  ssh -T git@github.com
+  161  php artisan make:controller RecetteController --recette
+  162  composer require laravel/ui
+  163  [200~composer config github-protocols ssh
+  164  composer config github-protocols ssh
+  165  composer require laravel/ui
+  166  php artisan ui react --auth
+  167  php artisan make:controller RecetteController --recette
+  168  php artisan make:controller RecetteController 
+  169  ssh -T git@github.com
+  170  git remote -v
+  171  git checkout -b lise
+  172  git push origin lise
+  173  code
+  174  exit
+  175  git push origin lise
+  176  git checkout -b lise
+  177  git remote -v
+  178  git checkout -b lise
+  179  git push origin lise
+  180  git remote set-url origin https://3faceme@bitbucket.org/3faceme/bb2.git
+  181  git push origin lise
+  182  git remote -v
+  183  git checkout -b lise
+  184  git add .
+  185  git commit -m "First commit"
+  186  git log --oneline
+  187  git push -u https://Lise@bitbucket.org/3faceme/bb2.git lise
+  188  git clone git clone https://lisethuillier@bitbucket.org/3faceme/bb2.git
+  189  git clone https://lisethuillier@bitbucket.org/3faceme/bb2.git
+  190  git checkout -b lise
+  191  git branch
+  192  git add .
+  193  git commit -m "First commit"
+  194  git push
+  195  git push --set-upstream origin lise
+  196  git push origin lise
+  197  git remote remove origin
+  198  git init
+  199  git remote add origin https://bitbucket.org/3faceme/bb2
+  200  git remote -v
+  201  git checkout -b lise
+  202  git clone https://lisethuillier@bitbucket.org/3faceme/bb2.git
+  203  git branch
+  204  git push origin lise
+  205  php artisan migrate:status
+  206  php artisan migrate:install
+  207  php artisan migrate:status
+  208  php artisna migrate
+  209  php artisan migrate
+  210  php artisan serve --host=192.168.56.111
+  211  ip addr
+  212  sudo ufw allow 8000
+  213  php artisan serv --host=192.168.56.111
+  214  cd vendor/laravel/framework/src/Illuminate/Database/Eloquent/Factories/HasFactory.php
+  215  cd vendor/laravel/framework/src/Illuminate/Database/Eloquent/Factories
+  216  more HasFactory.php 
+  217  cd ~/Site_Livre-recettes/
+  218  php artisan config:clear
+  219  php artisan cache:clear
+  220  php artisan serv --host=192.168.56.111
+  221  cd vendor/laravel/framework/src/Illuminate/Database/Eloquent/Factories
+  222  ls HasFactory.php 
+  223  php artisan config:clear
+  224  php artisan cache:clear
+  225  cd ~/Site_Livre-recettes/
+  226  php artisan config:clear
+  227  php artisan cache:clear
+  228  php artisan serv --host=192.168.56.111
+  229  php artisan make:controller RegisterController
+  230  composer require laravel/ui
+  231  php artisan ui bootstrap --auth
+  232  npm install && npm run dev
+  233  sudo apt install npm
+  234  npm install && npm run dev
+  235  history >history.txxt
+  236  node.js -v
+  237  sudo apt install node.js
+  238  sudo apt-get install nodejs npm
+  239  nodejs -v
+  240  npm run dev
+  241  sudo apt remove -y nodejs
+  242  curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+  243  sudo apt install nodejs
+  244  nodejs -v
+  245  npm install && npm run dev
+  246  php artisan serv --host=192.168.56.111
+  247  npm run dev
+  248  npm run build
+  249  php artisan serv --host=192.168.56.111
+  250  php artisan tinker
+  251  php artisan migrate:refresh
+  252  php artisan tinker
+  253  php artisan serv --host=192.168.56.111
+  254  cd Site_Livre-recettes/
+  255  code
+  256  exit
+  257  git branch
+  258  git add .
+  259  git commit -m "les connexions"
+  260  git push
+  261  git push origin lise
+  262  cd Site_Livre-recettes/
+  263  code
+  264  exit
+  265  cd Site_Livre-recettes/
+  266  code
+  267  cd --
+  268  sudo apt install umbrello5
+  269  sudo apt install umbrello
+  270  umbrello5 
+  271  sudo snap install visual-paradigm
+  272  sudo apt install snap
+  273  sudo snap install visual-paradigm
+  274  sudo apt install wget
+  275  wget https://staruml.io/download/release/v5.1.0/StarUML_5.1.0_amd64.deb
+  276  sudo apt install ./StarUML_5.1.0_amd64.deb
+  277  rm StarUML_5.1.0_amd64.deb
+  278  wget https://github.com/staruml/StarUML/releases/download/v5.1.0/StarUML_5.1.0_amd64.deb
+  279  sudo apt install modelio
+  280  sudo snap install modelio
+  281  modelio 
+  282  sudo snap remove modelio
+  283  wget https://github.com/ModelioOpenSource/Modelio/releases/download/v5.4.1/Modelio-open-source_5.4.1_amd64.deb
+  284  ls
+  285  cd Site_Livre-recettes/
+  286  cp -r ~/Site_Livre-recettes/
+  287  cp -r ~/Site_Livre-recettes/ /home/osboxes/Site_Livre-recettes/
+  288  cp -r /home/osboxes/Site_Livre-recettes/ /home/osboxes/Site_Livre-recettes/
+  289  cp -r /home/osboxes/Site_Livre-recettes/
+  290  cd --
+  291  cp -r /home/osboxes/Site_Livre-recettes/ /home/osboxes/Site_Livre-recettes/
+  292  umbrello5 
+  293  umbrello5
+  294  cd Site_Livre-recettes/
+  295  code
+  296  exit
+  297  php artisan test
+  298  php artisan serv --host=192.168.56.111
+  299  cd Site_Livre-recettes/
+  300  code
+  301  exit
+  302  php artisan serv --host=192.168.56.111
+  303  php artisan serv --host=192.168.1.111
+  304  php artisan serve --host=0.0.0.0 --port=8000
+  305  sudo lsof -i :8000
+  306  sudo apt install lsof
+  307  sudo lsof -i :8000
+  308  kill 1987
+  309  php artisan serve --host=0.0.0.0 --port=8000
+  310  php artisan serv --host=192.168.1.111
+  311  php artisan serv --host=192.168.56.111
+  312  cd Site_Livre-recettes/
+  313  code
+  314  ip addr
+  315  cd ..
+  316  sudo ufw status
+  317  php artisan serve --host=0.0.0.0 --port=8000
+  318  cd ..
+  319  cd ~/
+  320  sudo apt update
+  321  sudo systemctl restart apache2
+  322  sudo systemctl status apache2
+  323  sudo systemctl status mysql
+  324  mysudo apt install mysql-server
+  325  sudo apt install mysql-server
+  326  sudo apt install php-mysql
+  327  sudo apt install php-xdebug
+  328  sudo apt-get install php-xdebug
+  329  sudo apt install vinagre
+  330  sudo apt install phpmyadmin
+  331  sudo apt purge phpmyadmin
+  332  sudo systemctl status apache2
+  333  sudo systemctl status mysql
+  334  sudo apt install phpmyadmin
+  335  exit
+  336  sudo mysql -u root -p
+  337  sudo systemctl restart apache2
+  338  sudo systemctl status apache2
+  339  sudo apt install hexchat
+  340  hexchat
+  341  exit
+  342  cd S
+  343  cd Site_Livre-recettes/
+  344  code
+  345  exit
+  346  code
+  347  git stash
+  348  composer require --dev phpdocumentor/phpdocumentor
+  349  composer require phpdocumentor/shim
+  350  phpdoc -doc . -t docs/ --ignore "vendor"
+  351  vendor/bin phpdoc -doc . -t docs/ --ignore "vendor"
+  352  ./vendor/bin/phpdoc -doc . -t docs/ --ignore "vendor"
+  353  php artisan serv --host=192.168.56.111
+  354  php artisan route:list
+  355  php artisan serv --host=192.168.56.111
+  356  history > history.txt

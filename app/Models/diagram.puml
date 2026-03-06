@@ -1,0 +1,71 @@
+@startuml diagram_app_models
+title Diagramme de classes — App\\Models
+skinparam classAttributeIconSize 0
+
+package "App\\Models" {
+
+class Recette {
+  +int id
+  +String titre
+  +String description
+  +int temps_preparation
+  +String difficulte
+  +String regime_alimentaire
+  +timestamps
+}
+
+class Ingredient {
+  +int id
+  +String nom
+  +String unite_mesure
+  +timestamps
+}
+
+class Categorie {
+  +int id
+  +String nom
+  +String type
+  +timestamps
+}
+
+class User {
+  +int id
+  +String name
+  +String email
+  -String password
+  +timestamps
+}
+
+'"Pivot" classes to show extra pivot fields
+class RecetteIngredient {
+  +decimal quantite
+  +String unite
+}
+
+class RecetteCategorie {
+  
+}
+
+
+Recette "0..*" -- "0..*" Ingredient : ingredients
+Recette "0..*" -- "0..*" Categorie : categories
+
+
+RecetteIngredient .. Recette
+RecetteIngredient .. Ingredient
+RecetteCategorie .. Recette
+RecetteCategorie .. Categorie
+
+note left of RecetteIngredient
+Pivot table: recette_ingredient
+Champs: quantite, unite
+end note
+
+note right of RecetteCategorie
+Pivot table: categorie_recette
+Pas de champs supplémentaires définis dans le code
+end note
+
+}
+
+@enduml
