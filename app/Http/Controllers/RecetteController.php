@@ -152,9 +152,9 @@ class RecetteController extends Controller
                          ->with('success', 'Recette supprimée avec succès !');
     }
 
-    // ---------------------------------------------------------------
-    // Méthode privée : synchronise les ingrédients d'une recette
-    // ---------------------------------------------------------------
+    /* 
+    * Méthode privée : synchronise les ingrédients d'une recette
+    */
     private function syncIngredients(Recette $recette, array $ingredientsData): void
     {
         $pivot = [];

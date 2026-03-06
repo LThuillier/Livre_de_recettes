@@ -22,8 +22,8 @@ class RecetteRequest extends FormRequest
     {
         return [
             // Champs de la recette
-            'titre'              => 'required|string|max:5',
-            'description'        => 'required|string|max:50000',
+            'titre'              => 'required|string|max:50',
+            'description'        => 'required|string|max:5000',
             'temps_preparation'  => 'required|integer|min:1',
             'difficulte'         => 'required|in:facile,moyen,difficile',
             'regime_alimentaire' => 'required|in:normal,vegetarien,vegan,sans_gluten',
