@@ -1,0 +1,72 @@
+@startuml
+title Diagramme de classes - Système de Recettes (Version Finale)
+
+' Configuration visuelle pour ressembler à ton ancien schéma
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+package App\Models {
+    
+    class User {
+        +int id
+        +String name
+        +String email
+        +String password
+        +timestamps
+    }
+
+    class Role <<Spatie>> {
+        +int id
+        +String name
+        +String guard_name
+    }
+
+    class Recette {
+        +int id
+        +String titre
+        +String description
+        +int temps_preparation
+        +String difficulte
+        +String regime_alimentaire
+        +boolean est_public
+        +int user_id
+        +timestamps
+    }
+
+    class Ingredient {
+        +int id
+        +String nom
+        +String unite_mesure
+        +timestamps
+    }
+
+    class Categorie {
+        +int id
+        +String nom
+        +String type
+        +timestamps
+    }
+}
+
+' Relations entre les classes
+User "1" -- "0..*" Recette : crée >
+User "0..*" -- "0..*" Role : possède >
+
+Recette "0..*" -- "0..*" Categorie : appartient à >
+note on link
+  **Pivot: categorie_recette**
+  Pas de champs supplémentaires
+end note
+
+Recette "0..*" -- "0..*" Ingredient : contient >
+note on link
+  **Pivot: recette_ingredient**
+  --
+  +decimal quantite
+  +String unite
+end note
+
+@enduml
