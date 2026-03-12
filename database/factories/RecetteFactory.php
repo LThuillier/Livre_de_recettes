@@ -31,9 +31,11 @@ class RecetteFactory extends Factory
         return [
             'titre' => $titre,
             'description' => $description,
-            'temps_preparation' => $this->faker->numberBetween(1, 1200),
-            'difficulte' => $this->faker->randomElement(['facile', 'moyenne', 'difficile']),
-            'regime_alimentaire' => $this->faker->randomElement(['normal','Végétarien','Vegan', 'sans_gluten']),
+            'temps_preparation' => $this->faker->numberBetween(1, 120),
+            'difficulte' => $this->faker->randomElement(['facile', 'moyen', 'difficile']), // 'moyen' sans 'ne'
+            'regime_alimentaire' => $this->faker->randomElement(['normal', 'vegetarien', 'vegan', 'sans_gluten']), // minuscules, sans accents
+            'user_id' => \App\Models\User::factory(), // Important pour lier un utilisateur automatiquement
+            'est_public' => $this->faker->boolean(),
         ];
     }
 }
