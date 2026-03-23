@@ -1,5 +1,5 @@
 # Ignorer le dossier vendor (dépendances PHP)
-/vendor/
+/vendor
 /node_modules
 
 # Ignorer les fichiers et dossiers de logs
