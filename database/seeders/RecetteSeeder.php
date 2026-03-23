@@ -12,6 +12,6 @@ class RecetteSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\Recette::factory()->count(5)->create();
+        
     }
 }

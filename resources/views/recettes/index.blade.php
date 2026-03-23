@@ -35,14 +35,14 @@
                 <div class="d-flex gap-2">
                     <a href="{{ route('recettes.recette', $recette) }}" class="btn btn-outline-primary btn-sm">Voir</a>
 
-                    @if(auth()->check() && (auth()->user()->hasRole('admin') || auth()->id() === $recette->user_id))
+                    @if(auth()->check() && (auth()->user()->hasRole('admin') || auth()->id() === $recette->user_id)) // IGNORE : Affichage conditionnel des boutons de modification/suppression
 
                     <a href="{{ route('recettes.edit', $recette) }}" class="btn btn-outline-secondary btn-sm">Modifier</a>
                     <form action="{{ route('recettes.destroy', $recette) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-outline-danger btn-sm" 
-                                onclick="return confirm('Supprimer cette recette ?')">Supprimer</button>
+                        <button type="submit" class="btn btn-outline-danger btn-sm"
+                                onclick="return confirm('Supprimer cette recette ?')">Supprimer</button>// IGNORE : Ajout de la confirmation de suppression
                     </form>
                     @endif
                 </div>
