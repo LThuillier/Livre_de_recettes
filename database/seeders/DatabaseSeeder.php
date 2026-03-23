@@ -19,9 +19,9 @@ class DatabaseSeeder extends Seeder
     // Appel du seeder RecetteSeeder
         $this->call(RecetteSeeder::class);
         //crerer un utilisateur
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        User::factory()->create([ // Crée un utilisateur avec des données spécifiques
+            'name' => 'Test User', // Remplacez par le nom souhaité
+            'email' => 'test@example.com', // Remplacez par l'email souhaité
         ]);
     }
 }

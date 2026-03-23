@@ -1,23 +1,43 @@
-*.log
-.DS_Store
+# Ignorer le dossier vendor (dépendances PHP)
+vendor/
+/node_modules
+
+# Ignorer les fichiers et dossiers de logs
+logs/
+storage/
+
+# Ignorer les fichiers d'environnement (variables secrètes)
+.env
 .env.backup
 .env.production
-.phpactor.json
-.phpunit.result.cache
-/.fleet
-/.idea
-/.nova
-/.phpunit.cache
-/.vscode
-/.zed
 /auth.json
-/node_modules
+/storage/*.key
+
+# Ignorer les fichiers de build et de distribution
 /public/build
 /public/hot
 /public/storage
-/storage/*.key
 /storage/pail
+*.log
+
+
+# Ignorer les fichiers de cache de Composer
+composer.phar
+composer.lock
+/.phpunit.cache
+.phpunit.result.cache
+.phpactor.json
+
+# Ignorer les fichiers de l'IDE (VS Code, PHPStorm, etc.)
 Homestead.json
 Homestead.yaml
+.vscode/
+.idea/
+*.sublime-workspace
+/.fleet
+/.nova
+/.zed
+
+# Ignorer les fichiers système (Windows et Mac)
+.DS_Store
 Thumbs.db
-.env
