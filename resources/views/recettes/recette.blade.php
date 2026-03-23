@@ -6,7 +6,10 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>{{ $recette->titre }}</h1>
     <div>
-        <a href="{{ route('recettes.edit', $recette) }}" class="btn btn-success text-white">Modifier</a>
+        @if(auth()->check() && (auth()->user()->hasRole('admin') || auth()->id() === $recette->user_id))
+            <a href="{{ route('recettes.edit', $recette) }}" class="btn btn-success text-white">Modifier</a>
+        @endif
+        
         <a href="{{ route('recettes.index') }}" class="btn btn-secondary">Retour</a>
     </div>
 </div>

@@ -28,3 +28,5 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::get('/admin/dashboard', [AdminController::class, 'index'])->middleware('role:admin'); // Route protégée pour les administrateurs
+

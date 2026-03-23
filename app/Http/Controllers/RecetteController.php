@@ -18,27 +18,29 @@ class RecetteController extends Controller
         $user = Auth::user();
 
         if ($user) {
-            // Utilisateur connecté : ses recettes + les recettes publiques
+            if ($user->hasRole('admin')) {
+            $recettes = Recette::with('user')->get();
+            } else {
+            // Un utilisateur connecté voit les recettes publiques 
+            // OU ses propres recettes (même privées)
             $recettes = Recette::where('est_public', true)
                                ->orWhere('user_id', $user->id)
                                ->get();
+            }
         } else {
-            // Invité : uniquement les recettes publiques
-            $recettes = Recette::where('est_public', true)->get();
+            $recettes = Recette::where('est_public', true)->get();// CHANGEMENT : Affichage conditionnel selon l'authentification
         }
 
         return view('recettes.index', compact('recettes'));
     }
 
-    /**
-     * Afficher le formulaire de création
-     */
     public function create()
     {
+        // On utilise le middleware 'auth' dans les routes normalement, 
+        // mais cette sécurité directe est une bonne pratique.
         if (!Auth::check()) {
             return redirect()->route('login');
         }
-
         return view('recettes.create');
     }
 
@@ -47,43 +49,31 @@ class RecetteController extends Controller
      */
     public function store(RecetteRequest $request)
     {
-        $request->validate([
-            'titre'              => 'required|string|max:255',
-            'description'        => 'required|string',
-            'temps_preparation'  => 'required|integer|min:1',
-            'difficulte'         => 'required|in:facile,moyen,difficile',
-            'regime_alimentaire' => 'required|in:normal,vegetarien,vegan,sans_gluten',
-            // Validation des ingrédients (optionnels)
-            'ingredients'            => 'nullable|array',
-            'ingredients.*.nom'      => 'required_with:ingredients|string|max:255',
-            'ingredients.*.quantite' => 'required_with:ingredients|numeric|min:0',
-            'ingredients.*.unite'    => 'required_with:ingredients|string|max:50',
-        ]);
+        // Utilisation de ton RecetteRequest pour la validation
+        $validated = $request->validated();
 
-        // Création de la recette
         $recette = new Recette();
         $recette->titre              = $request->titre;
         $recette->description        = $request->description;
         $recette->temps_preparation  = $request->temps_preparation;
         $recette->difficulte         = $request->difficulte;
         $recette->regime_alimentaire = $request->regime_alimentaire;
+        
+        // CHANGEMENT : On lie la recette à l'utilisateur connecté
         $recette->user_id            = Auth::id();
 
-        // L'admin crée des recettes publiques, les autres des recettes privées
-        $recette->est_public = (Auth::user()->email === 'adminrecette@gmail.com');
+        // CHANGEMENT : Utilisation de Spatie pour définir la visibilité
+        // Si l'utilisateur est admin, la recette est publique par défaut
+        $recette->est_public = Auth::user()->hasRole('admin');
 
         $recette->save();
 
-        // Sauvegarde des ingrédients
         $this->syncIngredients($recette, $request->input('ingredients', []));
 
         return redirect()->route('recettes.index')
                          ->with('success', 'Recette créée avec succès !');
     }
 
-    /**
-     * Afficher une recette spécifique
-     */
     public function show(Recette $recette)
     {
         $recette->load('ingredients');
@@ -94,12 +84,12 @@ class RecetteController extends Controller
      * Afficher le formulaire d'édition
      */
     public function edit(Recette $recette)
-    {
-        if (Auth::id() !== $recette->user_id) {
-            return redirect()->route('recettes.index')->with('error', 'Accès non autorisé');
+    {        // CHANGEMENT : Seuls les admins ou le propriétaire peuvent éditer
+        if (!Auth::user()->hasRole('admin') && Auth::id() !== $recette->user_id) {// Sécurité renforcée
+            return redirect()->route('recettes.index')->with('error', 'Accès non autorisé');// Ou abort(403) pour une réponse HTTP plus appropriée
         }
 
-        $recette->load('ingredients');
+        $recette->load('ingredients');// Chargement des ingrédients pour pré-remplir le formulaire
         return view('recettes.edit', compact('recette'));
     }
 
@@ -108,28 +98,15 @@ class RecetteController extends Controller
      */
     public function update(RecetteRequest $request, Recette $recette)
     {
-        if (Auth::id() !== $recette->user_id) {
+        // CHANGEMENT : Même sécurité que pour l'édition
+        if (!Auth::user()->hasRole('admin') && Auth::id() !== $recette->user_id) {
             return abort(403);
         }
-
-        $request->validate([
-            'titre'              => 'required|string|max:255',
-            'description'        => 'required|string',
-            'temps_preparation'  => 'required|integer|min:1',
-            'difficulte'         => 'required|in:facile,moyen,difficile',
-            'regime_alimentaire' => 'required|in:normal,vegetarien,vegan,sans_gluten',
-            // Validation des ingrédients (optionnels)
-            'ingredients'            => 'nullable|array',
-            'ingredients.*.nom'      => 'required_with:ingredients|string|max:255',
-            'ingredients.*.quantite' => 'required_with:ingredients|numeric|min:0',
-            'ingredients.*.unite'    => 'required_with:ingredients|string|max:50',
-        ]);
 
         $recette->update($request->only([
             'titre', 'description', 'temps_preparation', 'difficulte', 'regime_alimentaire'
         ]));
 
-        // Mise à jour des ingrédients (remplace tout)
         $this->syncIngredients($recette, $request->input('ingredients', []));
 
         return redirect()->route('recettes.recette', $recette)
@@ -141,31 +118,30 @@ class RecetteController extends Controller
      */
     public function destroy(Recette $recette)
     {
-        if (Auth::id() !== $recette->user_id) {
+        // CHANGEMENT : Sécurité Admin ou Propriétaire
+        if (!Auth::user()->hasRole('admin') && Auth::id() !== $recette->user_id) {
             return abort(403);
         }
 
-        $recette->ingredients()->detach(); // Nettoyer la table pivot avant suppression
+        $recette->ingredients()->detach(); 
         $recette->delete();
 
         return redirect()->route('recettes.index')
                          ->with('success', 'Recette supprimée avec succès !');
     }
 
-    /* 
-    * Méthode privée : synchronise les ingrédients d'une recette
-    */
+    /**
+     * Méthode privée : synchronise les ingrédients
+     */
     private function syncIngredients(Recette $recette, array $ingredientsData): void
     {
         $pivot = [];
-
         foreach ($ingredientsData as $data) {
             if (empty($data['nom'])) continue;
 
-            // Chercher l'ingrédient par nom ou le créer s'il n'existe pas
             $ingredient = Ingredient::firstOrCreate(
                 ['nom' => $data['nom']],
-                ['unite_mesure' => $data['unite']]
+                ['unite_mesure' => $data['unite'] ?? 'unité']
             );
 
             $pivot[$ingredient->id] = [
@@ -173,8 +149,6 @@ class RecetteController extends Controller
                 'unite'    => $data['unite'],
             ];
         }
-
-        // sync() supprime les anciens liens et insère les nouveaux
         $recette->ingredients()->sync($pivot);
     }
 }
