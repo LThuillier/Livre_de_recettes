@@ -5,9 +5,9 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>Mes Recettes</h1>
-        @auth
+    @auth
         <a href="{{ route('recettes.create') }}" class="btn btn-success">Nouvelle Recette</a>
-        @endauth
+    @endauth
 </div>
 
 @if(session('success'))
@@ -26,23 +26,22 @@
                 </p>
                 <p class="card-text">
                     <small class="text-muted">
-                        ⏱️ {{ $recette->temps_preparation }} min | 
-                        🎚️ {{ $recette->difficulte }} | 
-                        🌱 {{ $recette->regime_alimentaire }}
+                        ⏱️ {{ $recette->temps_formatte }} | 
+                        🎚️ {{ ucfirst($recette->difficulte) }} | 
+                        🌱 {{ ucfirst(str_replace('_', ' ', $recette->regime_alimentaire)) }}
                     </small>
                 </p>
                 <p class="card-text">{{ Str::limit($recette->description, 100) }}</p>
                 <div class="d-flex gap-2">
                     <a href="{{ route('recettes.recette', $recette) }}" class="btn btn-outline-primary btn-sm">Voir</a>
 
-                    @if(auth()->check() && (auth()->user()->hasRole('admin') || auth()->id() === $recette->user_id)) // IGNORE : Affichage conditionnel des boutons de modification/suppression
-
+                    @if(auth()->check() && (auth()->user()->hasRole('admin') || auth()->id() === $recette->user_id)) 
                     <a href="{{ route('recettes.edit', $recette) }}" class="btn btn-outline-secondary btn-sm">Modifier</a>
                     <form action="{{ route('recettes.destroy', $recette) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-outline-danger btn-sm"
-                                onclick="return confirm('Supprimer cette recette ?')">Supprimer</button>// IGNORE : Ajout de la confirmation de suppression
+                                onclick="return confirm('Supprimer cette recette ?')">Supprimer</button>
                     </form>
                     @endif
                 </div>

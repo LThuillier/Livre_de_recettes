@@ -13,7 +13,16 @@ class Ingredient extends Model
 
     public function recettes()
     {
-        return $this->belongsToMany(Recette::class)
+        return $this->belongsToMany(Recette::class, 'ingredient_recette')
                     ->withPivot('quantite', 'unite');
+    }
+
+    public function estLiquide()
+    {
+        $motsLiquides = ['lait', 'eau', 'huile', 'vin', 'jus', 'crème', 'sirop', 'cl', 'ml'];
+        foreach ($motsLiquides as $mot) {
+            if (str_contains(strtolower($this->nom), $mot)) return true;
+        }
+        return false;
     }
 }

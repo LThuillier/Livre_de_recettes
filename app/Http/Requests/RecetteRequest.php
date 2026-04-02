@@ -25,6 +25,7 @@ class RecetteRequest extends FormRequest
             'titre'              => 'required|string|max:50',
             'description'        => 'required|string|max:5000',
             'temps_preparation'  => 'required|integer|min:1',
+            'portions'           => 'required|integer|min:1',
             'difficulte'         => 'required|in:facile,moyen,difficile',
             'regime_alimentaire' => 'required|in:normal,vegetarien,vegan,sans_gluten',
 
@@ -32,7 +33,8 @@ class RecetteRequest extends FormRequest
             'ingredients'            => 'nullable|array',
             'ingredients.*.nom'      => 'required|string|max:50',
             'ingredients.*.quantite' => 'required|numeric|min:0',
-            'ingredients.*.unite'    => 'required|string|max:50',
+            'ingredients.*.unite'    => 'required|string|max:50',// 'g', 'ml', 'unité' etc.
+            'ingredients.*.nature'   => 'required|in:liquide,solide', // Nouveau champ pour différencier liquide/solide
         ];
     }
 
@@ -70,6 +72,9 @@ class RecetteRequest extends FormRequest
             'ingredients.*.quantite.numeric'  => 'La quantité doit être un nombre.',
             'ingredients.*.quantite.min'      => 'La quantité doit être positive.',
             'ingredients.*.unite.required'    => 'L\'unité de chaque ingrédient est obligatoire.',
+
+            'ingredients.*.nature.required'   => 'Précisez si l\'ingrédient est liquide ou solide.',
+            'ingredients.*.nature.in'         => 'La nature doit être liquide ou solide.',
         ];
     }
 }

@@ -3,6 +3,8 @@
 use App\Http\Controllers\RecetteController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\IngredientController;
 
 // Routes d'authentification
 Auth::routes();
@@ -30,3 +32,16 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::get('/admin/dashboard', [AdminController::class, 'index'])->middleware('role:admin'); // Route protégée pour les administrateurs
 
+Route::resource('ingredients', IngredientController::class);/// Routes pour la gestion autonome des ingrédients (CRUD complet)
+
+
+Route::resource('recettes', RecetteController::class)->names([
+    'show' => 'recettes.recette'
+]);
+
+Route::resource('ingredients', IngredientController::class);
+
+// Dashboard Admin (Optionnel, protégé par le middleware de Spatie)
+Route::get('/admin/dashboard', function() {
+    return view('admin.dashboard');
+})->middleware('role:admin')->name('admin.dashboard');

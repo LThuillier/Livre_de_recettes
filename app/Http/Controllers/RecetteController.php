@@ -8,27 +8,26 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\RecetteRequest;
 
+/**
+ * Controller gérant la logique des Recettes, la sécurité Spatie, et la conversion des ingrédients.
+ */
 class RecetteController extends Controller
 {
-    /**
-     * Afficher la liste des recettes
-     */
     public function index()
     {
         $user = Auth::user();
 
+        // Logique de visibilité (Admin voit tout, User voit public + les siennes)
         if ($user) {
             if ($user->hasRole('admin')) {
-            $recettes = Recette::with('user')->get();
+                $recettes = Recette::with('user')->get();
             } else {
-            // Un utilisateur connecté voit les recettes publiques 
-            // OU ses propres recettes (même privées)
-            $recettes = Recette::where('est_public', true)
-                               ->orWhere('user_id', $user->id)
-                               ->get();
+                $recettes = Recette::where('est_public', true)
+                                   ->orWhere('user_id', $user->id)
+                                   ->get();
             }
         } else {
-            $recettes = Recette::where('est_public', true)->get();// CHANGEMENT : Affichage conditionnel selon l'authentification
+            $recettes = Recette::where('est_public', true)->get();
         }
 
         return view('recettes.index', compact('recettes'));
@@ -36,119 +35,138 @@ class RecetteController extends Controller
 
     public function create()
     {
-        // On utilise le middleware 'auth' dans les routes normalement, 
-        // mais cette sécurité directe est une bonne pratique.
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
         return view('recettes.create');
     }
 
-    /**
-     * Enregistrer une nouvelle recette
-     */
     public function store(RecetteRequest $request)
     {
-        // Utilisation de ton RecetteRequest pour la validation
+        // 1. On récupère les données propres et validées
         $validated = $request->validated();
-
-        $recette = new Recette();
-        $recette->titre              = $request->titre;
-        $recette->description        = $request->description;
-        $recette->temps_preparation  = $request->temps_preparation;
-        $recette->difficulte         = $request->difficulte;
-        $recette->regime_alimentaire = $request->regime_alimentaire;
         
-        // CHANGEMENT : On lie la recette à l'utilisateur connecté
+        // 2. On crée la recette de manière très précise pour éviter les erreurs
+        $recette = new Recette();
+        $recette->titre              = $validated['titre'];
+        $recette->description        = $validated['description'];
+        $recette->temps_preparation  = $validated['temps_preparation'];
+        $recette->portions           = $validated['portions'];
+        $recette->difficulte         = $validated['difficulte'];
+        $recette->regime_alimentaire = $validated['regime_alimentaire'];
         $recette->user_id            = Auth::id();
-
-        // CHANGEMENT : Utilisation de Spatie pour définir la visibilité
-        // Si l'utilisateur est admin, la recette est publique par défaut
-        $recette->est_public = Auth::user()->hasRole('admin');
-
+        $recette->est_public         = Auth::user()->hasRole('admin');
+        
         $recette->save();
 
-        $this->syncIngredients($recette, $request->input('ingredients', []));
+        // 3. On enregistre les ingrédients liés
+        $ingredients = $request->input('ingredients', []);
+        $this->syncIngredients($recette, $ingredients);
 
         return redirect()->route('recettes.index')
-                         ->with('success', 'Recette créée avec succès !');
+                         ->with('success', 'Recette créée !');
     }
 
     public function show(Recette $recette)
     {
+        // On charge les ingrédients pour pouvoir les afficher sur la page
         $recette->load('ingredients');
         return view('recettes.recette', compact('recette'));
     }
 
-    /**
-     * Afficher le formulaire d'édition
-     */
     public function edit(Recette $recette)
-    {        // CHANGEMENT : Seuls les admins ou le propriétaire peuvent éditer
-        if (!Auth::user()->hasRole('admin') && Auth::id() !== $recette->user_id) {// Sécurité renforcée
-            return redirect()->route('recettes.index')->with('error', 'Accès non autorisé');// Ou abort(403) pour une réponse HTTP plus appropriée
+    {
+        if (!Auth::user()->hasRole('admin') && Auth::id() !== $recette->user_id) {
+            return redirect()->route('recettes.index')->with('error', 'Accès non autorisé');
         }
 
-        $recette->load('ingredients');// Chargement des ingrédients pour pré-remplir le formulaire
         return view('recettes.edit', compact('recette'));
     }
 
-    /**
-     * Mettre à jour une recette
-     */
     public function update(RecetteRequest $request, Recette $recette)
     {
-        // CHANGEMENT : Même sécurité que pour l'édition
         if (!Auth::user()->hasRole('admin') && Auth::id() !== $recette->user_id) {
             return abort(403);
         }
 
-        $recette->update($request->only([
-            'titre', 'description', 'temps_preparation', 'difficulte', 'regime_alimentaire'
-        ]));
+        $validated = $request->validated();
 
-        $this->syncIngredients($recette, $request->input('ingredients', []));
+        // Mise à jour explicite pour éviter tout plantage de MassAssignment
+        $recette->update([
+            'titre'              => $validated['titre'],
+            'description'        => $validated['description'],
+            'temps_preparation'  => $validated['temps_preparation'],
+            'portions'           => $validated['portions'],
+            'difficulte'         => $validated['difficulte'],
+            'regime_alimentaire' => $validated['regime_alimentaire'],
+        ]);
+
+        // On synchronise les ingrédients modifiés
+        $ingredients = $request->input('ingredients', []);
+        $this->syncIngredients($recette, $ingredients);
 
         return redirect()->route('recettes.recette', $recette)
-                         ->with('success', 'Recette modifiée avec succès !');
+                         ->with('success', 'Recette modifiée !');
     }
 
-    /**
-     * Supprimer une recette
-     */
     public function destroy(Recette $recette)
     {
-        // CHANGEMENT : Sécurité Admin ou Propriétaire
         if (!Auth::user()->hasRole('admin') && Auth::id() !== $recette->user_id) {
             return abort(403);
         }
 
+        // On détache les liens en base avant de supprimer
         $recette->ingredients()->detach(); 
         $recette->delete();
 
         return redirect()->route('recettes.index')
-                         ->with('success', 'Recette supprimée avec succès !');
+                         ->with('success', 'Recette supprimée !');
     }
 
     /**
-     * Méthode privée : synchronise les ingrédients
+     * Méthode privée indispensable : synchronise les ingrédients et convertit les liquides
      */
     private function syncIngredients(Recette $recette, array $ingredientsData): void
     {
         $pivot = [];
+        
+        // Table des densités moyennes
+        $densites = [
+            'miel' => 1.4, 'sirop' => 1.3, 'huile' => 0.9, 'lait' => 1.03, 'eau' => 1.0, 'creme' => 0.95
+        ];
+
         foreach ($ingredientsData as $data) {
             if (empty($data['nom'])) continue;
 
-            $ingredient = Ingredient::firstOrCreate(
-                ['nom' => $data['nom']],
-                ['unite_mesure' => $data['unite'] ?? 'unité']
-            );
+            $nom = strtolower(trim($data['nom']));
+            
+            // Sécurité : remplacement de la virgule par un point (ex: 0,5 -> 0.5)
+            $quantiteStr = str_replace(',', '.', (string)$data['quantite']);
+            $quantite = (float) $quantiteStr;
+            
+            $unite = strtolower(trim($data['unite']));
+            $nature = $data['nature'] ?? 'solide';
 
+            // Logique de conversion si c'est liquide
+            if ($nature === 'liquide' && in_array($unite, ['cl', 'ml', 'l'])) {
+                $coef = 1.0;
+                foreach ($densites as $key => $val) {
+                    if (str_contains($nom, $key)) { $coef = $val; break; }
+                }
+                
+                $ml = ($unite === 'cl') ? $quantite * 10 : (($unite === 'l') ? $quantite * 1000 : $quantite);
+                $quantite = $ml * $coef;
+                $unite = 'g'; // On uniformise l'affichage en grammes
+            }
+
+            // CORRECTION CRUCIALE : On retire 'nature' d'ici car la colonne n'existe pas en DB !
+            $ingredient = Ingredient::firstOrCreate(['nom' => $nom]);
+
+            // On prépare les données pour la table pivot ingredient_recette
             $pivot[$ingredient->id] = [
-                'quantite' => $data['quantite'],
-                'unite'    => $data['unite'],
+                'quantite' => $quantite,
+                'unite' => $unite,
             ];
         }
+        
+        // On met à jour la base de données
         $recette->ingredients()->sync($pivot);
     }
 }

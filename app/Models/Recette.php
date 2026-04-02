@@ -16,8 +16,27 @@ class Recette extends Model
         'difficulte',
         'regime_alimentaire',
         'user_id',
+        'portions',        // Nouveau champ pour les portions
         'est_public',   // Corrigé : tiret → underscore
     ];
+
+    public function getTempsFormatteAttribute()
+    {
+        $minutes = $this->temps_preparation;
+        
+        if ($minutes < 60) {
+            return $minutes . ' min';
+        }
+
+        $heures = floor($minutes / 60);
+        $resteMin = $minutes % 60;
+
+        if ($resteMin === 0) {
+            return $heures . 'h';
+        }
+
+        return $heures . 'h ' . sprintf('%02d', $resteMin) . 'min';
+    }
 
     // Relation avec les ingrédients
     public function ingredients()
