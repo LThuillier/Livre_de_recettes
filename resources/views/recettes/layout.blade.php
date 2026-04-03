@@ -76,7 +76,10 @@
 <!-- Footer -->
 <footer class="py-4 bg-light border-top text-center">
     <div class="container">
-        <p class="text-muted mb-0">© 2025 Livre de Recettes - Projet BTS SIO</p>
+        <p class="text-muted mb-0">2026 Livre de Recettes - Projet BTS SIO</p>
+        <a href="{{ route('mentions') }}" class="text-muted text-decoration-none hover-underline">Mentions Légales</a>
+        <span class="mx-2">|</span> 
+        <a href="{{ route('confidentialite') }}" class="text-muted text-decoration-none hover-underline">Politique de confidentialité</a>
     </div>
 </footer>
 

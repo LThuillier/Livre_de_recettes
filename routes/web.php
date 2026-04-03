@@ -45,3 +45,6 @@ Route::resource('ingredients', IngredientController::class);
 Route::get('/admin/dashboard', function() {
     return view('admin.dashboard');
 })->middleware('role:admin')->name('admin.dashboard');
+
+Route::view('/mentions-legales', 'pages.mentions')->name('mentions');
+Route::view('/politique-confidentialite', 'pages.confidentialite')->name('confidentialite');
