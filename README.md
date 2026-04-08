@@ -1,59 +1,139 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+﻿# LivreDeRecettes - Projet BTS SIO SLAM
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Projet web Laravel de gestion de recettes (site, authentification, CRUD recettes/ingredients, gestion des roles, protection anti brute-force, tests BDD/TDD).
 
-## About Laravel
+## Objectif du README
+Ce document donne a l examinateur toutes les etapes pour lancer et verifier le projet rapidement.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Lancement rapide
+```bash
+cp .env.example .env
+composer install
+php artisan key:generate
+# configurer la base dans .env (MySQL ou SQLite)
+php artisan migrate --seed
+php artisan db:seed --class=RoleAndUserSeeder
+npm install
+npm run build
+php artisan serve
+```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Sous Windows/WAMP (PowerShell), utiliser:
+```powershell
+Copy-Item .env.example .env -Force
+composer install
+php artisan key:generate
+# Configurer DB_CONNECTION / DB_DATABASE / DB_USERNAME / DB_PASSWORD dans .env
+php artisan migrate --seed
+php artisan db:seed --class=RoleAndUserSeeder
+npm install
+npm run build
+php artisan serve
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Option SQLite locale (rapide pour demo):
+```powershell
+New-Item -ItemType File -Path .\database\database.sqlite -Force
+# puis dans .env:
+# DB_CONNECTION=sqlite
+# DB_DATABASE=database/database.sqlite
+```
 
-## Learning Laravel
+## Ce que fait la preparation
+- installe les dependances PHP/JS
+- initialise la cle application
+- cree les tables via migrations
+- cree un utilisateur de demo
+- cree les roles/permissions et un compte admin
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## URLs utiles
+- Site (liste recettes): `http://127.0.0.1:8000/recettes`
+- Racine (redirection): `http://127.0.0.1:8000/`
+- Connexion: `http://127.0.0.1:8000/login`
+- Inscription: `http://127.0.0.1:8000/register`
+- Ingredients: `http://127.0.0.1:8000/ingredients`
+- Dashboard admin: `http://127.0.0.1:8000/admin/dashboard`
+- Mentions legales: `http://127.0.0.1:8000/mentions-legales`
+- Politique de confidentialite: `http://127.0.0.1:8000/politique-confidentialite`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Comptes de demonstration
+- `test@example.com` / `password` : utilisateur demo (cree par `DatabaseSeeder`)
+- `adminrecette@gmail.com` / `Administrateur1!` : compte admin (cree par `RoleAndUserSeeder`)
 
-## Laravel Sponsors
+## Donnees fictives generees
+- 1 utilisateur demo (`test@example.com`)
+- roles `admin` et `user`
+- permissions de gestion des recettes
+- compte admin preconfigure
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Remarque: aucune recette n est prechargee par defaut. Les recettes de demo sont a creer via l interface.
 
-### Premium Partners
+Regenerer les donnees:
+```bash
+php artisan migrate:fresh --seed
+php artisan db:seed --class=RoleAndUserSeeder
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Parcours de verification conseille (5 a 10 min)
+1. Ouvrir `/recettes` en invite et verifier que seules les recettes publiques sont visibles.
+2. Se connecter avec `test@example.com`.
+3. Creer une recette avec ingredients (inclure un ingredient liquide en `cl/ml/l`).
+4. Verifier la conversion automatique des ingredients liquides en grammes.
+5. Se connecter en admin et verifier la visibilite globale des recettes.
+6. Tester la protection anti brute-force sur `/login`.
+7. Lancer les tests automatiques pour prouver la non regression.
 
-## Contributing
+## Tests automatiques
+```bash
+php artisan test
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Sous Windows (si Xdebug provoque des warnings):
+```powershell
+$env:XDEBUG_MODE='off'; php artisan test
+```
 
-## Code of Conduct
+Etat actuel attendu:
+- 16 tests passes
+- 45 assertions
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Protection anti brute-force (Fail2Ban applicatif)
+Protection applicative integree (active automatiquement):
+- apres `FAIL2BAN_MAX_ATTEMPTS` echecs de connexion depuis une meme IP, l IP est bloquee temporairement
+- blocage applique meme si l utilisateur n existe pas
+- deblocage automatique a la fin de la duree de ban
+- remise a zero du compteur apres connexion reussie
 
-## Security Vulnerabilities
+Variables `.env`:
+- `FAIL2BAN_ENABLED=true`
+- `FAIL2BAN_MAX_ATTEMPTS=5`
+- `FAIL2BAN_FIND_TIME_MINUTES=10`
+- `FAIL2BAN_BAN_MINUTES=30`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Demonstration rapide:
+1. Aller sur `http://127.0.0.1:8000/login`
+2. Envoyer 5 fois un mauvais mot de passe
+3. Verifier le message de blocage (erreur de type throttle)
+4. Reessayer depuis la meme IP avec le bon mot de passe: acces refuse jusqu a expiration du ban
 
-## License
+## Fichiers importants
+- `routes/web.php`
+- `app/Http/Controllers/RecetteController.php`
+- `app/Http/Controllers/IngredientController.php`
+- `app/Http/Controllers/Auth/LoginController.php`
+- `app/Services/Security/Fail2BanService.php`
+- `app/Http/Middleware/Fail2BanMiddleware.php`
+- `config/fail2ban.php`
+- `database/seeders/DatabaseSeeder.php`
+- `database/seeders/RoleAndUserSeeder.php`
+- `tests/Feature/Fail2BanTest.php`
+- `tests/Feature/RecetteBddTest.php`
+- `tests/Unit/RecetteTddTest.php`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Documentation complementaire
+- `Dossier_E5 Laravel.docx`
+- `documentation_larave.docx`
+- `Diagramme de classe.png`
+- `Diagramme de sequence.png`
+- `diagram.puml`
+- `sequence.puml`
