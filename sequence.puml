@@ -1,39 +1,47 @@
 @startuml
-title Diagramme de Séquence : Création d'une Recette (Admin)
-autonumber
+hide footbox
+skinparam monochrome false
+skinparam shadowing false
 
 actor "Administrateur" as Admin
-boundary "Vue : recettes.create" as Vue
-control "RecetteController" as Ctrl
-entity "Recette (Model)" as Model
+participant "Vue : recettes.create" as Vue
+participant "RecetteController" as Controller
+participant "Validation\n(RecetteRequest)" as Validator
+participant "Recette (Model)" as Model
 database "Base de données" as BDD
 
-Admin -> Vue : Remplit le formulaire (titre, ingrédients, etc.)
-Admin -> Vue : Clique sur "Enregistrer"
-Vue -> Ctrl : POST /recettes (Request $request)
+Admin -> Vue : 1. Remplit le formulaire (titre, ingrédients, etc.)
+Admin -> Vue : 2. Clique sur "Enregistrer"
 
-activate Ctrl
-Ctrl -> Ctrl : Valide les données (RecetteRequest)
+Vue -> Controller : 3. POST /recettes
+activate Controller
 
-note right of Ctrl
-  Vérification de l'email
-  (adminrecette@gmail.com)
+Controller -> Validator : 4. Valide les données
+activate Validator
+Validator --> Controller : Données valides
+deactivate Validator
+
+note right of Controller
+  Vérification du rôle / email
   pour fixer est_public = true
 end note
 
-Ctrl -> Model : create($data)
+Controller -> Model : 5. create($data)
 activate Model
-Model -> BDD : INSERT INTO recettes
-BDD --> Model : OK (id_recette)
+Model -> BDD : 6. INSERT INTO recettes
+BDD --> Model : 7. OK (id_recette)
+Model --> Controller : Retourne l'objet Recette créé
 deactivate Model
 
-loop pour chaque ingrédient
-    Ctrl -> Ctrl : syncIngredients()
-    Ctrl -> BDD : INSERT INTO recette_ingredient (pivot)
+group loop [pour chaque ingrédient]
+    Controller -> Model : 8. attach() / sync()
+    activate Model
+    Model -> BDD : 9. INSERT INTO recette_ingredient (pivot)
+    deactivate Model
 end
 
-Ctrl --> Vue : Redirect avec Success Message
-deactivate Ctrl
+Controller --> Vue : 10. Redirect avec Success Message
+deactivate Controller
 
-Vue --> Admin : Affiche la liste des recettes
+Vue --> Admin : 11. Affiche la liste des recettes
 @enduml

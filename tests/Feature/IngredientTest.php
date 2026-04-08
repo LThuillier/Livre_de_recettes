@@ -2,44 +2,51 @@
 
 namespace Tests\Feature;
 
+use App\Models\Recette;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
-use Spatie\Permission\Models\Role; // Import important pour le rôle
 
 class IngredientTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * Vérifie l'ajout d'une recette avec ses ingrédients.
-     */
-    public function test_creation_recette_avec_ingredients(): void
+    public function test_admin_peut_creer_une_recette_avec_ingredients(): void
     {
-        // 1. On crée le rôle dans la base de test
         Role::create(['name' => 'admin']);
 
-        // 2. On crée l'admin
-        $admin = User::factory()->create(['email' => 'adminrecette@gmail.com']);
+        $admin = User::factory()->create();
         $admin->assignRole('admin');
 
-        $donnees = [
-            'titre' => 'Pâtes Carbonara',
+        $payload = [
+            'titre' => 'Pates Carbonara',
             'description' => 'La vraie recette italienne',
             'temps_preparation' => 15,
+            'portions' => 4,
             'difficulte' => 'facile',
             'regime_alimentaire' => 'normal',
             'ingredients' => [
-                ['nom' => 'Pâtes', 'quantite' => 500, 'unite' => 'g'],
-                ['nom' => 'Lardons', 'quantite' => 200, 'unite' => 'g'],
-            ]
+                ['nom' => 'Pates', 'quantite' => 500, 'unite' => 'g', 'nature' => 'solide'],
+                ['nom' => 'Lardons', 'quantite' => 200, 'unite' => 'g', 'nature' => 'solide'],
+            ],
         ];
 
-        // 3. On exécute l'action
-        $response = $this->actingAs($admin)->post('/recettes', $donnees);
+        $response = $this->actingAs($admin)->post('/recettes', $payload);
 
-        // 4. On vérifie
-        $this->assertDatabaseHas('recettes', ['titre' => 'Pâtes Carbonara']);
         $response->assertRedirect('/recettes');
+
+        $this->assertDatabaseHas('recettes', [
+            'titre' => 'Pates Carbonara',
+            'user_id' => $admin->id,
+            'est_public' => true,
+            'portions' => 4,
+        ]);
+
+        $this->assertDatabaseHas('ingredients', ['nom' => 'pates']);
+        $this->assertDatabaseHas('ingredients', ['nom' => 'lardons']);
+
+        $recette = Recette::where('titre', 'Pates Carbonara')->firstOrFail();
+        $this->assertCount(2, $recette->ingredients);
     }
 }
