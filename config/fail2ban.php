@@ -20,6 +20,5 @@ return [
     'find_time_minutes' => (int) env('FAIL2BAN_FIND_TIME_MINUTES', 10),
 
     // Durée du bannissement (en minutes).
-    'ban_minutes' => (int) env('FAIL2BAN_BAN_MINUTES', 30),
+    'ban_minutes' => (int) env('FAIL2BAN_BAN_MINUTES', 3),
 ];
-

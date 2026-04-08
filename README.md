@@ -108,7 +108,7 @@ Variables `.env`:
 - `FAIL2BAN_ENABLED=true`
 - `FAIL2BAN_MAX_ATTEMPTS=5`
 - `FAIL2BAN_FIND_TIME_MINUTES=10`
-- `FAIL2BAN_BAN_MINUTES=30`
+- `FAIL2BAN_BAN_MINUTES=3`
 
 Demonstration rapide:
 1. Aller sur `http://127.0.0.1:8000/login`
