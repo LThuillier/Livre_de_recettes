@@ -97,6 +97,19 @@ Etat actuel attendu:
 - 16 tests passes
 - 45 assertions
 
+## Lecture des fichiers DOCX
+Une commande Artisan est disponible pour lire le texte d un fichier `.docx`:
+
+```bash
+php artisan docx:read "Dossier_E5 Laravel.docx"
+```
+
+Exemple avec chemin relatif:
+
+```bash
+php artisan docx:read documentation_larave.docx
+```
+
 ## Protection anti brute-force (Fail2Ban applicatif)
 Protection applicative integree (active automatiquement):
 - apres `FAIL2BAN_MAX_ATTEMPTS` echecs de connexion depuis une meme IP, l IP est bloquee temporairement
@@ -122,13 +135,16 @@ Demonstration rapide:
 - `app/Http/Controllers/IngredientController.php`
 - `app/Http/Controllers/Auth/LoginController.php`
 - `app/Services/Security/Fail2BanService.php`
+- `app/Services/Document/DocxReader.php`
 - `app/Http/Middleware/Fail2BanMiddleware.php`
 - `config/fail2ban.php`
+- `routes/console.php`
 - `database/seeders/DatabaseSeeder.php`
 - `database/seeders/RoleAndUserSeeder.php`
 - `tests/Feature/Fail2BanTest.php`
 - `tests/Feature/RecetteBddTest.php`
 - `tests/Unit/RecetteTddTest.php`
+- `tests/Unit/DocxReaderTest.php`
 
 ## Documentation complementaire
 - `Dossier_E5 Laravel.docx`
